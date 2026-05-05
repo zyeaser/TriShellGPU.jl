@@ -1,0 +1,46 @@
+using TriShellFiniteElement
+using Ferrite
+# using Arpack
+using LinearAlgebra
+using CairoMakie
+t = 1.0
+
+p = 1.0 # N/mm²              # Uniform pressure load intensity
+E = 200000.0 #MPa
+ν = 0.30   
+
+num_elem_transverse = [1]
+num_elem_long = [1]
+nel = (num_elem_transverse[1], num_elem_long[1])
+
+X0_Y0  = Ferrite.Vec(0.0, 0.0)
+XL_YL = Ferrite.Vec(100.0, 1000.0)
+grid = generate_grid(Ferrite.Triangle, nel, X0_Y0, XL_YL)
+
+
+nodes_3D = [Node((grid.nodes[i].x[1], grid.nodes[i].x[2], 0.0)) for i in eachindex(grid.nodes)]
+
+grid = Grid(grid.cells, nodes_3D)
+
+
+ip = Lagrange{RefTriangle,1}()
+ip6 = TriShellFiniteElement.IP6()
+ip3 = TriShellFiniteElement.IP3()
+qr1 = QuadratureRule{RefTriangle}(1)  
+qr3 = QuadratureRule{RefTriangle}(2)  
+
+
+dh = DofHandler(grid)
+add!(dh, :u, ip^3)
+add!(dh, :θ, ip^3)
+close!(dh)
+
+Ke = allocate_matrix(dh)
+Ke = TriShellFiniteElement.assemble_global_Ke!(Ke, dh, qr1, qr3, ip3, ip6, E, ν, t)
+
+
+# index_matlab = [1, 2, 3, 13, 14, 4, 5, 6, 15, 16, 7, 8, 9, 17, 18, 10, 11, 12, 19, 20]
+
+
+# Ke_matlab = Matrix(Ke[index_matlab, index_matlab])
+
