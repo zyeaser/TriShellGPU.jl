@@ -44,7 +44,7 @@ Defines custom finite element interpolations `IP3` (3-node linear) and `IP6` (6-
 
 ### `src/TriShellFiniteElement_Membrane_and_Bending.jl`
 
-Standalone CPU solver script used during development. Uses Ferrite's built-in direct sparse solver (`K \ F`) without any GPU code.
+Standalone CPU example script used during validation. Uses Ferrite's built-in direct sparse solver (`K \ F`) without any GPU code.
 
 ---
 
