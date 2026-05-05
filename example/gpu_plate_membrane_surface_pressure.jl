@@ -35,7 +35,7 @@ using Tensors
 using LinearAlgebra
 using Statistics
 
-include(joinpath(@__DIR__, "..", "gpu", "gpu_solve.jl"))
+include(joinpath(@__DIR__, "..", "src", "gpu", "gpu_solve.jl"))
 
 function gpu_trishell_uniform_pressure(t, type, p, nel; io=nothing)
 

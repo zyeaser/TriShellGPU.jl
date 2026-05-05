@@ -35,7 +35,7 @@ using LinearAlgebra
 using Statistics
 using Dates
 
-include(joinpath(@__DIR__, "..", "gpu", "gpu_solve.jl"))
+include(joinpath(@__DIR__, "..", "src", "gpu", "gpu_solve.jl"))
 
 function write_gpu_run_header(io, t_plate, q)
     slurm_job_id   = get(ENV, "SLURM_JOB_ID", "<not set>")

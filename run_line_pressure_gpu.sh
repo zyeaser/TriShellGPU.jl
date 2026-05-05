@@ -62,12 +62,23 @@ nvidia-smi --query-gpu=name,memory.total,driver_version \
            --format=csv,noheader 2>/dev/null || nvidia-smi
 
 echo ""
-echo "Instantiating Julia environment..."
-"$JULIA" --project=. -e 'import Pkg; Pkg.instantiate()'
+echo "Configuring CUDA.jl to use the local CUDA toolkit..."
+# Write LocalPreferences.toml before Pkg.instantiate() so CUDA.jl precompiles
+# with the correct toolkit setting and avoids "no CUDA runtime" warnings.
+if ! grep -q 'CUDA_Runtime_jll' LocalPreferences.toml 2>/dev/null; then
+    cat >> LocalPreferences.toml << 'TOML'
+
+[CUDA_Runtime_jll]
+local = true
+TOML
+    echo "      Written CUDA_Runtime_jll preference to LocalPreferences.toml."
+else
+    echo "      LocalPreferences.toml already contains CUDA_Runtime_jll."
+fi
 
 echo ""
-echo "Configuring CUDA.jl to use the local CUDA toolkit..."
-"$JULIA" --project=. -e 'using CUDA; CUDA.set_runtime_version!(local_toolkit=true)' || true
+echo "Instantiating Julia environment..."
+"$JULIA" --project=. -e 'import Pkg; Pkg.instantiate()'
 
 echo ""
 echo "Running line-pressure GPU example..."
