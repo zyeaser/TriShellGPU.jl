@@ -51,7 +51,9 @@ fi
 # ── Step 4: Set Julia 1.12.6 as the default ──────────────────────────────────
 echo ""
 echo "[3/5] Setting Julia $JULIA_VERSION as default..."
-juliaup default "$JULIA_VERSION"
+# juliaup default "$JULIA_VERSION"
+juliaup add "$JULIA_VERSION" || true
+juliaup default release
 
 # ── Step 5: Add ~/.juliaup/bin to ~/.bashrc (idempotent) ─────────────────────
 echo ""
